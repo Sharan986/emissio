@@ -22,6 +22,45 @@ export function useCanvasRenderer(
   const lastFrameRef = useRef(-1);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const dimensionsRef = useRef({ width: 0, height: 0, dpr: 1 });
+  const renderTaskRef = useRef<number | null>(null);
+
+  /** Draw an image with cover behavior (fills canvas, crops overflow) */
+  const drawCover = useCallback(
+    (img: HTMLImageElement, alpha: number = 1) => {
+      const ctx = ctxRef.current;
+      if (!ctx) return;
+
+      ctx.globalAlpha = alpha;
+
+      const { width: canvasWidth, height: canvasHeight } = dimensionsRef.current;
+
+      const imgRatio = img.naturalWidth / img.naturalHeight;
+      const canvasRatio = canvasWidth / canvasHeight;
+
+      let drawWidth: number;
+      let drawHeight: number;
+      let offsetX: number;
+      let offsetY: number;
+
+      if (imgRatio > canvasRatio) {
+        // Image is wider — fit height, crop sides
+        drawHeight = canvasHeight;
+        drawWidth = canvasHeight * imgRatio;
+        offsetX = (canvasWidth - drawWidth) / 2;
+        offsetY = 0;
+      } else {
+        // Image is taller — fit width, crop top/bottom
+        drawWidth = canvasWidth;
+        drawHeight = canvasWidth / imgRatio;
+        offsetX = 0;
+        offsetY = (canvasHeight - drawHeight) / 2;
+      }
+
+      ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+      ctx.globalAlpha = 1; // restore
+    },
+    []
+  );
 
   /** Size the canvas to fill the viewport at the correct pixel density */
   const sizeCanvas = useCallback(() => {
@@ -54,49 +93,13 @@ export function useCanvasRenderer(
       ctxRef.current = ctx;
     }
 
-    // Force re-render after resize by clearing the lastFrame cache
+    // Force re-render after resize
     const currentFrame = lastFrameRef.current;
-    lastFrameRef.current = -1;
-    if (currentFrame >= 0 && images[currentFrame]) {
-      drawCover(images[currentFrame]);
-      lastFrameRef.current = currentFrame;
+    if (currentFrame >= 0) {
+      const baseImg = images[Math.floor(currentFrame)];
+      if (baseImg) drawCover(baseImg, 1);
     }
-  }, [canvasRef, images]);
-
-  /** Draw an image with cover behavior (fills canvas, crops overflow) */
-  const drawCover = useCallback(
-    (img: HTMLImageElement) => {
-      const ctx = ctxRef.current;
-      if (!ctx) return;
-
-      const { width: canvasWidth, height: canvasHeight } = dimensionsRef.current;
-
-      const imgRatio = img.naturalWidth / img.naturalHeight;
-      const canvasRatio = canvasWidth / canvasHeight;
-
-      let drawWidth: number;
-      let drawHeight: number;
-      let offsetX: number;
-      let offsetY: number;
-
-      if (imgRatio > canvasRatio) {
-        // Image is wider — fit height, crop sides
-        drawHeight = canvasHeight;
-        drawWidth = canvasHeight * imgRatio;
-        offsetX = (canvasWidth - drawWidth) / 2;
-        offsetY = 0;
-      } else {
-        // Image is taller — fit width, crop top/bottom
-        drawWidth = canvasWidth;
-        drawHeight = canvasWidth / imgRatio;
-        offsetX = 0;
-        offsetY = (canvasHeight - drawHeight) / 2;
-      }
-
-      ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-    },
-    []
-  );
+  }, [canvasRef, images, drawCover]);
 
   /**
    * Render a specific frame index — synchronous, no rAF wrapper.
@@ -104,20 +107,39 @@ export function useCanvasRenderer(
    * so wrapping in another rAF would add a frame of visual lag.
    */
   const renderFrame = useCallback(
-    (index: number) => {
+    (index: number) => { // index can now be a fractional float
       if (!images.length) return;
 
       // Clamp index
-      const frameIndex = Math.max(0, Math.min(index, images.length - 1));
+      const clampedIndex = Math.max(0, Math.min(index, images.length - 1));
 
-      // Skip redundant redraws
-      if (frameIndex === lastFrameRef.current) return;
+      // Skip redundant redraws (only skip if the exact fractional value matches)
+      if (clampedIndex === lastFrameRef.current) return;
 
-      const img = images[frameIndex];
-      if (!img) return;
+      if (renderTaskRef.current) {
+        cancelAnimationFrame(renderTaskRef.current);
+      }
 
-      drawCover(img);
-      lastFrameRef.current = frameIndex;
+      renderTaskRef.current = requestAnimationFrame(() => {
+        const baseIndex = Math.floor(clampedIndex);
+        const nextIndex = Math.min(baseIndex + 1, images.length - 1);
+        const alpha = clampedIndex % 1;
+
+        const baseImg = images[baseIndex];
+        const nextImg = images[nextIndex];
+
+        if (!baseImg) return;
+
+        // Draw base image fully opaque
+        drawCover(baseImg, 1);
+        
+        // If there's a fractional remainder, crossfade the next image on top
+        if (nextImg && alpha > 0) {
+          drawCover(nextImg, alpha);
+        }
+
+        lastFrameRef.current = clampedIndex;
+      });
     },
     [images, drawCover]
   );

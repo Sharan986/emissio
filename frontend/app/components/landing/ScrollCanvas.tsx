@@ -54,7 +54,7 @@ export default function ScrollCanvas({ images, isLoaded }: ScrollCanvasProps) {
           invalidateOnRefresh: true,
         },
         onUpdate: () => {
-          renderFrame(Math.round(frameObj.frame));
+          renderFrame(frameObj.frame);
         },
       });
     }, 100);

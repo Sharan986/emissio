@@ -34,6 +34,7 @@
 
 html {
   scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -89,9 +90,9 @@ body {
   border-radius: inherit;
   padding: 1.4px;
   background: linear-gradient(180deg,
-    rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 20%,
-    rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.1) 80%, rgba(255, 255, 255, 0.3) 100%);
+      rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 20%,
+      rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0) 60%,
+      rgba(255, 255, 255, 0.1) 80%, rgba(255, 255, 255, 0.3) 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -116,6 +117,7 @@ body {
     transform: translateY(24px);
     filter: blur(6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -128,6 +130,7 @@ body {
     opacity: 0;
     transform: translateY(-16px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -139,6 +142,7 @@ body {
     opacity: 0;
     transform: translateY(64px) scale(0.97);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -150,6 +154,7 @@ body {
     opacity: 0;
     transform: translateX(-32px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -161,6 +166,7 @@ body {
     opacity: 0;
     transform: translateX(32px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -168,18 +174,24 @@ body {
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-8px);
   }
 }
 
 @keyframes pulse-subtle {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.7;
   }
@@ -189,9 +201,11 @@ body {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -234,14 +248,16 @@ body {
   justify-content: center;
   gap: 0.5rem;
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-              background-color 0.3s ease;
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.3s ease;
   will-change: transform;
 }
+
 .btn-primary:hover {
   transform: translateY(-2px) scale(1.02);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
+
 .btn-primary:active {
   transform: translateY(0) scale(0.98);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -256,16 +272,18 @@ body {
   justify-content: center;
   gap: 0.5rem;
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-              border-color 0.3s ease,
-              background-color 0.3s ease,
-              color 0.3s ease,
-              box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
+
 .btn-ghost:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 20px rgba(255, 255, 255, 0.06);
 }
+
 .btn-ghost:active {
   transform: translateY(0) scale(0.98);
   transition-duration: 0.1s;
@@ -280,19 +298,22 @@ body {
   gap: 0.5rem;
   overflow: hidden;
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-              background-color 0.3s ease;
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.3s ease;
   will-change: transform;
 }
+
 .btn-cta:hover {
   transform: translateY(-2px) scale(1.02);
   box-shadow: 0 8px 32px rgba(16, 185, 129, 0.25), 0 0 0 1px rgba(16, 185, 129, 0.1);
 }
+
 .btn-cta:active {
   transform: translateY(0) scale(0.98);
   box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
   transition-duration: 0.1s;
 }
+
 /* Shimmer sweep on hover */
 .btn-cta::after {
   content: '';
@@ -301,10 +322,11 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
   transition: left 0.6s ease;
   pointer-events: none;
 }
+
 .btn-cta:hover::after {
   left: 100%;
 }
@@ -313,6 +335,7 @@ body {
 .btn-arrow {
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
 .group:hover .btn-arrow,
 .btn-primary:hover .btn-arrow,
 .btn-ghost:hover .btn-arrow,
@@ -327,6 +350,7 @@ body {
   align-items: center;
   gap: 0.5rem;
 }
+
 .link-hover::after {
   content: '';
   position: absolute;
@@ -337,6 +361,7 @@ body {
   background: currentColor;
   transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
 .link-hover:hover::after {
   width: 100%;
 }
@@ -349,7 +374,7 @@ body {
   opacity: 0;
   transform: translateY(32px);
   transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .reveal.revealed {
@@ -358,18 +383,36 @@ body {
 }
 
 /* Stagger children */
-.reveal-stagger > .reveal:nth-child(1) { transition-delay: 0ms; }
-.reveal-stagger > .reveal:nth-child(2) { transition-delay: 100ms; }
-.reveal-stagger > .reveal:nth-child(3) { transition-delay: 200ms; }
-.reveal-stagger > .reveal:nth-child(4) { transition-delay: 300ms; }
-.reveal-stagger > .reveal:nth-child(5) { transition-delay: 400ms; }
-.reveal-stagger > .reveal:nth-child(6) { transition-delay: 500ms; }
+.reveal-stagger>.reveal:nth-child(1) {
+  transition-delay: 0ms;
+}
+
+.reveal-stagger>.reveal:nth-child(2) {
+  transition-delay: 100ms;
+}
+
+.reveal-stagger>.reveal:nth-child(3) {
+  transition-delay: 200ms;
+}
+
+.reveal-stagger>.reveal:nth-child(4) {
+  transition-delay: 300ms;
+}
+
+.reveal-stagger>.reveal:nth-child(5) {
+  transition-delay: 400ms;
+}
+
+.reveal-stagger>.reveal:nth-child(6) {
+  transition-delay: 500ms;
+}
 
 /* ========================================
    REDUCED MOTION
    ======================================== */
 
 @media (prefers-reduced-motion: reduce) {
+
   .animate-fade-up,
   .animate-fade-down,
   .animate-hero-rise,
@@ -426,6 +469,7 @@ html {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }

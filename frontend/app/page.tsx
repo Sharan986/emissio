@@ -16,7 +16,7 @@ export default function Home() {
   const { images, progress, isLoaded } = useImageSequence();
 
   return (
-    <>
+    <div>
       {/* Fixed canvas background — persists through all sections */}
       <ScrollCanvas images={images} isLoaded={isLoaded} />
 
@@ -38,6 +38,6 @@ export default function Home() {
         <CTASection />
         <Footer />
       </main>
-    </>
+    </div>
   );
 }
