@@ -56,6 +56,7 @@ body {
   flex-direction: column;
   justify-content: center;
   position: relative;
+  overflow: hidden; /* Force clipping to prevent horizontal scroll leaks on mobile */
 }
 
 /* Dark frosted glass backdrop for content sections */
